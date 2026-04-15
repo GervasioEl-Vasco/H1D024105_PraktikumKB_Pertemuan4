@@ -7,7 +7,7 @@ class DiagnosaKomputer:
         self.jendela.geometry("500x600")
         self.jendela.configure(bg="#fafafa")
 
-        # Database kerusakan - Pake Dictionary biar rapi
+        # Database kerusakan
         self.data_pakar = {
             "RAM Bermasalah": {
                 "gejala": ["Muncul bunyi BIP berulang", "Layar Biru / BSOD", "Sering nge-hang"],
@@ -35,16 +35,12 @@ class DiagnosaKomputer:
         self.tampilan_utama()
 
     def tampilan_utama(self):
-        # Header simpel
         tk.Label(self.jendela, text="Cek Kerusakan Komputer", font=("Arial", 14, "bold"), bg="#fafafa", fg="#333").pack(pady=15)
-        
-        # Frame buat daftar gejala
+
         frame_gejala = tk.Frame(self.jendela, bg="white", padx=15, pady=15, relief="ridge", bd=1)
         frame_gejala.pack(padx=20, fill="both", expand=True)
 
         tk.Label(frame_gejala, text="Pilih apa yang kamu rasain:", font=("Arial", 10), bg="white").pack(anchor="w", pady=5)
-
-        # Ambil semua gejala unik
         semua_gejala = []
         for d in self.data_pakar.values():
             semua_gejala.extend(d["gejala"])
@@ -55,7 +51,6 @@ class DiagnosaKomputer:
             cb.pack(anchor="w")
             self.pilihan_checkbox[g] = var
 
-        # Tombol Diagnosa
         btn = tk.Button(self.jendela, text="Cek Sekarang", command=self.mulai_diagnosa, 
                         bg="#4a90e2", fg="white", font=("Arial", 10, "bold"), padx=20, pady=10, bd=0, cursor="hand2")
         btn.pack(pady=20)
@@ -65,19 +60,15 @@ class DiagnosaKomputer:
         
         hasil = []
         for nama, detail in self.data_pakar.items():
-            # Hitung kecocokan
             cocok = set(terpilih) & set(detail["gejala"])
             skor = len(cocok)
             
-            # Masukkan semua ke list hasil (supaya tidak ada yang "tidak cocok")
-            # Kalau user gak pilih apa-apa, skornya 0 tapi tetep masuk list
             hasil.append({
                 "nama": nama,
                 "skor": skor,
                 "solusi": detail["solusi"]
             })
 
-        # Urutkan dari skor tertinggi ke terendah
         hasil.sort(key=lambda x: x["skor"], reverse=True)
         
         self.jendela_hasil(hasil)
@@ -92,7 +83,6 @@ class DiagnosaKomputer:
 
         txt.insert("end", "KEMUNGKINAN PENYEBAB:\n", "bold")
 
-        # Tampilkan semua data, yang paling cocok ada di atas
         for h in list_hasil:
             status = f" (Sangat Cocok)" if h["skor"] > 0 else " (Kemungkinan Lain)"
             txt.insert("end", f"• {h['nama']}{status}\n", "bold")
